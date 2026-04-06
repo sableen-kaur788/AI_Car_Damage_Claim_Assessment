@@ -161,7 +161,7 @@ Your repo has two deployable parts: the **FastAPI backend** and the **React fron
 | **Build command** | `pip install -r requirements.txt` |
 | **Start command** | `uvicorn backend.main:app --host 0.0.0.0 --port $PORT` |
 
-3. Under **Environment**, add each variable (Render does not upload a `.env` file—paste key/value pairs). Use **`env.render.template`** in the repo as a checklist; copy values from your local `.env` or fill placeholders.
+3. Under **Environment**, add the same variables as in `.env` (at minimum **`DATABASE_URL`**, **`JWT_SECRET`**). Use your **Supabase** `DATABASE_URL` unless you switch to Render Postgres.
 4. **`CORS_ORIGINS`**: after the frontend exists, set a comma-separated list of allowed origins, e.g. `https://your-frontend-name.onrender.com,http://localhost:3000`.
 5. **`APP_ENV`**: set to **`production`** so password-reset does not leak tokens in API responses.
 6. **`GROQ_API_KEY`**: optional but recommended for real LLM reports.
