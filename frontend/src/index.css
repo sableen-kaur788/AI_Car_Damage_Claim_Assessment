@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-slate-950 text-slate-100 antialiased;
+  background-image:
+    radial-gradient(circle at top left, rgba(74, 222, 128, 0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(56, 189, 248, 0.14), transparent 24%),
+    linear-gradient(160deg, #020617 0%, #071225 45%, #08111d 100%);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.auth-marquee {
+  display: flex;
+  width: max-content;
+  animation: auth-marquee 22s linear infinite;
+}
+
+.auth-marquee-item {
+  margin-right: 2.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgb(148 163 184);
+  white-space: nowrap;
+}
+
+.auth-marquee-item::after {
+  content: "";
+  display: inline-block;
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-left: 2.5rem;
+  border-radius: 9999px;
+  background: rgba(74, 222, 128, 0.6);
+  vertical-align: middle;
+}
+
+@keyframes auth-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

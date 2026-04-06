@@ -1,0 +1,18 @@
+# Secrets and local env (never commit)
+.env
+.env.local
+.env.*.local
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+backend/car_damage.db
+backend/uploads/*
+backend/generated_reports/*
+!backend/uploads/.gitkeep
+!backend/generated_reports/.gitkeep
+node_modules/
+frontend/node_modules/
+frontend/build
