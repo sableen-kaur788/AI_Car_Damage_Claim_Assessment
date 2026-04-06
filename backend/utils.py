@@ -9,9 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = BASE_DIR.parent
 UPLOAD_DIR = BASE_DIR / "uploads"
 REPORT_DIR = BASE_DIR / "generated_reports"
-MODEL_PATH = Path(r"C:\MainProject\car_damage_detector\models\epoch80.pt")
 
 load_dotenv(PROJECT_ROOT / ".env")
+MODEL_PATH = Path(os.environ.get("MODEL_PATH", str(PROJECT_ROOT / "models" / "epoch80.pt")))
 
 
 def ensure_directories() -> None:
