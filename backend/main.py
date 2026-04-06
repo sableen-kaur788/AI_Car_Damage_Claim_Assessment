@@ -52,6 +52,18 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+def root() -> dict[str, str]:
+    """Root URL (e.g. opening the Render link in a browser). API lives under /docs, /health, /auth, etc."""
+    return {
+        "service": app.title,
+        "version": app.version,
+        "docs": "/docs",
+        "health": "/health",
+        "openapi": "/openapi.json",
+    }
+
+
 @app.on_event("startup")
 def startup_event() -> None:
     ensure_directories()
