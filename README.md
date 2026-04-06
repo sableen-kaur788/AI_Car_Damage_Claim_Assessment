@@ -1,5 +1,11 @@
 # AI Car Damage Claim Assessment
 
+Demo:
+https://ai-car-damage-claim-assessment.onrender.com
+
+MLFlow:
+https://dagshub.com/sableen-kaur788/AI_Car_Damage_Claim_Assessment.mlflow
+
 End-to-end system for **vehicle damage detection** (YOLOv8 instance segmentation), **repair-oriented cost summaries**, **LLM-generated insurance-style narrative reports** (via [Groq](https://groq.com/)), and a **React** web app with **JWT auth**, history, charts, and **PDF** downloads. Jupyter notebooks cover data work and model training.
 
 > **Disclaimer:** Cost figures and LLM text are **assistive only** and are not a substitute for professional inspection or insurer adjudication.
