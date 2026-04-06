@@ -139,9 +139,60 @@ Static files: `/uploads/…`, `/reports/…`.
 - **Data_Preparation(damaged+clean).ipynb** — Cleaning and splits.
 - **Model_Building.ipynb** — YOLO training / MLflow (use **environment variables** for any remote tracking tokens; do not commit secrets).
 
+## Deploying to [Render](https://render.com)
+
+Your repo has two deployable parts: the **FastAPI backend** and the **React frontend**. Connect Render to GitHub, then create services from this repository (no need to “upload” a zip—Render pulls from Git).
+
+### 1. Backend — Web Service
+
+1. In the Render dashboard: **New +** → **Web Service** → connect **GitHub** → choose **`AI_Car_Damage_Claim_Assessment`** (or your fork).
+2. Use these settings:
+
+| Setting | Value |
+|--------|--------|
+| **Root directory** | *(leave empty — repo root)* |
+| **Runtime** | **Python 3** |
+| **Build command** | `pip install -r requirements.txt` |
+| **Start command** | `uvicorn backend.main:app --host 0.0.0.0 --port $PORT` |
+
+3. Under **Environment**, add the same variables as in `.env` (at minimum **`DATABASE_URL`**, **`JWT_SECRET`**). Use your **Supabase** `DATABASE_URL` unless you switch to Render Postgres.
+4. **`CORS_ORIGINS`**: after the frontend exists, set a comma-separated list of allowed origins, e.g. `https://your-frontend-name.onrender.com,http://localhost:3000`.
+5. **`APP_ENV`**: set to **`production`** so password-reset does not leak tokens in API responses.
+6. **`GROQ_API_KEY`**: optional but recommended for real LLM reports.
+7. Deploy. Note the service URL, e.g. `https://your-api.onrender.com`.
+
+Render sets **`PORT`** automatically; the start command above uses it.
+
+Python version is pinned for Render via **`runtime.txt`** in the repo root.
+
+**Caveats**
+
+- **Free tier** services sleep after idle time; first request after sleep can be slow (cold start).
+- **`backend/uploads`** and **`backend/generated_reports`** live on the instance disk; they can be **lost on redeploy** unless you add persistent disk or external storage (e.g. S3/Supabase Storage) later.
+
+### 2. Frontend — Static Site
+
+1. **New +** → **Static Site** → same GitHub repo.
+2. **Root directory**: `frontend`
+3. **Build command**: `npm install && npm run build`
+4. **Publish directory**: `build`
+5. **Environment** (important for Create React App): add **`REACT_APP_API_URL`** = your **backend URL** with **no trailing slash**, e.g. `https://your-api.onrender.com`. This is baked in at **build** time; if you change the API URL, trigger a **new deploy** of the static site.
+6. After deploy, copy the static site URL (e.g. `https://your-app.onrender.com`) and add it to the backend’s **`CORS_ORIGINS`**, then redeploy the **Web Service**.
+
+### 3. Order of operations
+
+1. Deploy **Web Service** (API) first.  
+2. Deploy **Static Site** with `REACT_APP_API_URL` pointing at that API.  
+3. Update **`CORS_ORIGINS`** on the API to include the static site URL and redeploy the API.
+
+### 4. Checks
+
+- Open `https://your-api.onrender.com/docs` for Swagger.  
+- Call `GET https://your-api.onrender.com/health` and confirm `database_connected` and `jwt_secret_configured` are good.
+
 ## GitHub and large files
 
-Weight files under `models/` can exceed GitHub’s per-file limit. If push fails, use [Git LFS](https://git-lfs.com/) or host weights separately and document `MODEL_PATH`.
+Weight files under `models/` can exceed GitHub’s per-file limit. If push fails, use [Git LFS](https://git-lfs.com/) or host weights separately and document `MODEL_PATH`. Render’s build must be able to see the weights file (in the repo or downloaded in the build command); very large models may need a download step or external hosting plus **`MODEL_PATH`**.
 
 ## License
 
