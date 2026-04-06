@@ -47,17 +47,35 @@ End-to-end system for **vehicle damage detection** (YOLOv8 instance segmentation
 
 Create a **`.env`** file in the **project root** (same folder as `backend/`). It is gitignored.
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `DATABASE_URL` | **Yes** | PostgreSQL URL (e.g. Supabase). Used by `backend/db.py`. |
-| `JWT_SECRET` | **Yes** (prod) | Secret for signing access/refresh tokens. |
-| `GROQ_API_KEY` | No | Groq API key for LLM reports; if unset, a template fallback report is used. |
-| `CORS_ORIGINS` | No | Comma-separated origins; default `http://localhost:3000`. |
-| `MODEL_PATH` | No | Path to `.pt` weights; default `<project_root>/models/epoch80.pt`. |
-| `APP_ENV` | No | If not `production`, forgot-password response may include `reset_token` for testing. |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | No | Default `1440`. |
-| `REFRESH_TOKEN_EXPIRE_DAYS` | No | Default `7`. |
-| `RESET_TOKEN_EXPIRE_MINUTES` | No | Default `30`. |
+**Meaning of “setup”:** **Required** means the backend will not run correctly (or will be insecure) without it. **Recommended** means the app has a fallback default, but you should normally set it for real use (LLM reports, correct CORS, explicit prod/dev behavior, custom weights path). **Optional** means a sensible default exists; only set these if you need different token lifetimes.
+
+| Variable | Setup | Description |
+|----------|--------|-------------|
+| `DATABASE_URL` | **Required** | PostgreSQL URL (e.g. Supabase). Used by `backend/db.py`. |
+| `JWT_SECRET` | **Required** (production) | Secret for signing access/refresh tokens. |
+| `GROQ_API_KEY` | **Recommended** | Groq API key for LLM insurance-style reports. If omitted, the API still runs but uses the built-in template fallback in `llm_report.py`. |
+| `CORS_ORIGINS` | **Recommended** | Comma-separated browser origins allowed to call the API. Default in code: `http://localhost:3000`. Set this when your React app uses another URL (e.g. production domain). |
+| `MODEL_PATH` | **Recommended** | Absolute or relative path to the YOLO `.pt` file. Default: `<project_root>/models/epoch80.pt`. Set if your weights live elsewhere. |
+| `APP_ENV` | **Recommended** | Use `production` for deployed APIs. In non-production, `POST /auth/forgot-password` may return `reset_token` in JSON for local testing. |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | **Optional** | Access token lifetime. Default: `1440` (24h). |
+| `REFRESH_TOKEN_EXPIRE_DAYS` | **Optional** | Refresh token lifetime. Default: `7`. |
+| `RESET_TOKEN_EXPIRE_MINUTES` | **Optional** | Password-reset link/token expiry. Default: `30`. |
+
+**Example `.env` skeleton** (copy, rename values; do not commit real secrets):
+
+```env
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/postgres?sslmode=require
+JWT_SECRET=change-this-to-a-long-random-string
+GROQ_API_KEY=
+CORS_ORIGINS=http://localhost:3000
+MODEL_PATH=
+APP_ENV=development
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+REFRESH_TOKEN_EXPIRE_DAYS=7
+RESET_TOKEN_EXPIRE_MINUTES=30
+```
+
+Leave `GROQ_API_KEY` or `MODEL_PATH` empty to use the code defaults described above.
 
 **Frontend:** set `REACT_APP_API_URL` when building or starting (e.g. `http://localhost:8000`).
 
