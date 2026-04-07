@@ -1,7 +1,8 @@
 # AI Car Damage Claim Assessment
 
 Demo:
-https://ai-car-damage-claim-assessment.onrender.com
+HuggingSpace - https://huggingface.co/spaces/sableenkaur27/AI_Car_Damage_Detector
+Render - https://ai-car-damage-claim-assessment-f.onrender.com
 
 MLFlow:
 https://dagshub.com/sableen-kaur788/AI_Car_Damage_Claim_Assessment.mlflow
